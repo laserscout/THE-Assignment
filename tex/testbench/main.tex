@@ -1,0 +1,105 @@
+{% !TeX spellcheck = el_GR-en_US
+  \documentclass[11pt]{article}
+  \usepackage{geometry}
+  \geometry{a4paper, top=2.5cm, bottom=2.5cm, left=2.2cm,
+    right=2.2cm}
+  \usepackage{fontspec}
+  \usepackage{graphicx}
+  \usepackage{titlesec}
+  \usepackage{titling}
+  \usepackage{float}
+  \usepackage{caption}
+  \usepackage{subcaption}
+  \usepackage[nonumeralsign]{xgreek}
+  \usepackage{siunitx}
+  \usepackage{fancyhdr}
+  \usepackage{hhline}
+  \usepackage{hyperref}
+  \usepackage[export]{adjustbox}
+  \usepackage{enumitem}
+  \usepackage{amsmath}
+  \usepackage{amsfonts}
+  \usepackage{amssymb}
+  \usepackage{array}
+
+  \setmainfont{Baskerville}
+  \setmonofont{Consolas}
+  \newfontfamily\titlefont{Helvetica}
+  \newfontfamily\headingfont{Helvetica Bold}
+
+  \titleformat*{\section}{\large\headingfont}
+  \titleformat*{\subsection}{\small\headingfont}
+
+  \graphicspath{ {./Images/} }
+
+  \date{\today}
+
+  \pagestyle{fancy}
+  \lhead{Robobar}
+  \rhead{Team 13}
+  \renewcommand{\headrulewidth}{0.4pt}
+  \renewcommand{\footrulewidth}{0.4pt}
+  \setlength{\headheight}{14pt}
+
+  \fancypagestyle{firstpage}{%
+    \lhead{
+      \titlefont \scriptsize
+      % \includegraphics[width=.14\linewidth, valign=c ]{LogoAUTH.ai}
+      \begin{tabular}{l}
+        \textbf{Τεχνολογία Λογισμικού}\\Τομέας Ηλεκτρονικής και
+        Υπολογιστών\\Τμήμα Ηλεκτρολόγων Μηχανικών και\\Μηχανικών
+        Υπολογιστών Α.Π.Θ
+      \end{tabular}
+    }
+    \rhead{\titlefont \scriptsize 8ο Εξάμηνο - Άνοιξη 2018}
+    \setlength{\headheight}{100pt}
+  }
+
+  \hypersetup{colorlinks=true, linkcolor=black ,urlcolor=blue}
+  \urlstyle{same}
+
+  \begin{document}
+  \thispagestyle{firstpage}
+  
+  % \begin{figure}[H]
+    % \centering
+    % \includegraphics[]{logo.png}
+  % \end{figure}
+
+  \begin{center}
+    \Large Robot Bartender for the human customer
+    \vspace{1cm}
+    
+    {\titlefont \Huge Σχεδίαση Συστήματος}
+  \end{center}
+  
+  \vspace{5cm}
+  \vfill
+  
+  \begin{flushright}
+    \titlefont \footnotesize
+    \begin{tabular}{r l}
+      Θεοδωρίδου Χριστίνα&christtk@auth.gr\\
+      Μπλάννινγκ Φρανκ&frankgou@ece.auth.gr\\
+      Παρασκευαΐδης Κωνσταντίνος&konstapf@ece.auth.gr\\
+      Πάρναλης-Παλαντζίδης Γιώργος&parnalis@ece.auth.gr\\
+    \end{tabular}
+    
+    \large 
+    \vspace{1.5cm}
+    \textbf{\today}
+    \vspace{.5cm}
+  \end{flushright}
+  \hrulefill
+  \vspace{2.5cm}
+
+  \newpage
+
+  \tableofcontents
+  % \listoffigures
+
+  \newpage
+  \section{Εισαγωγή}
+  \input{1_Intro}
+
+\end{document}
