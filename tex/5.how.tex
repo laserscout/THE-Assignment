@@ -1,1 +1,87 @@
 \section{Πως σκοπεύουμε να το κάνουμε εμείς}
+
+Πλάνο επίθεσης
+
+Μετά από μελέτη των προηγούμενων υλοποιήσεων και πειραματισμό με την
+εξαγωγή διάφορων χαρακτηριστικών (features) [και καλά ;)] κλπ κλπ
+αποφασίσαμε να ακολουθήσουμε την παρακάτω πορεία αντιμετώπισης του
+προβλήματος:
+
+\begin{enumerate}[noitemsep]
+\item Τι παραθυροποίηση θα κάνουμε (λογικά την κλασική
+  hamming... φαίνεται να είναι ψιλοστάνταρ)
+\item Ποια features σκοπεύουμε να χρησιμοποιήσουμε; (γιατί;)
+  Χαρακτηριστικά από το πεδίο του χρόνου, το πεδίο της συχνότητας, το
+  cepstral πεδίο, άλλα…
+\item Γενικά MFCC + MPEG-7 audio descriptors + ίσως κάνα δυο ακόμα
+  είναι υπέρ-αρκετά
+\item Τι μοντέλο/μοντέλα θα δοκιμάσουμε; (γιατί;)
+\item Stack (python/R, τι βιβλιοθήκες/kits για τα μοντέλα;)
+\end{enumerate}
+
+
+Διάφορα features από τη βιβλιογραφία:
+
+M. Kashif Saeed Khan · Wasfi G. Al-Khatib
+Machine-learning based classification of speech and music
+
+\begin{enumerate}[noitemsep]
+\item Percentage of low energy frames
+\item Roll off point
+\item Spectral
+  flux
+\item Zero crossing rate
+\item Spectral centroid
+\item 4Hz modulation
+  energy
+\item Variance of the roll off point
+\item Variance of the spectral
+  centroid
+\item Variance of the spectral flux
+\item Cepstral residual
+\item Variance of the cepstral residual
+\end{enumerate}
+
+\begin{enumerate}[noitemsep]
+\item Cepstral coefficients
+\item Delta cepstral coefficients
+\item Harmonic coefficients
+\item 4 Hz harmonic coefficients
+\item Log energy
+\end{enumerate}
+\begin{enumerate}[noitemsep]
+\item Line spectral frequencies (LSF)
+\item Differential LSF, the successive differences of LSF
+\item LSF with the zero crossing count of the filtered input signal
+\item LSF with Linear prediction zero crossing ratio, the ratio of the
+  zero crossing count (ZCC) of the input and the ZCC of the output of
+  the LP analysis filter
+\end{enumerate}
+
+---
+
+Environmental sound recognition: a survey
+sachin chachada
+
+\begin{enumerate}[noitemsep]
+\item Zero crossings
+\item Amplitude
+\item Power
+\item Auto-regression
+\item Adaptive time frequency decomposition
+\item Short time Fourier
+\item Brightness
+\item Tonality
+\item Loudness
+\item Pitch
+\item Chroma
+\item Harmonicity
+\item Perceptual filter bank
+\item Advanced auditory model
+\item (Cepstral) auto-regression
+\item Rythm
+\item Phase space
+\item Eigen domain
+\end{enumerate}
+
+---
