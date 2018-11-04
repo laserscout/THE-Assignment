@@ -23,10 +23,10 @@
   \usepackage{array}
   \usepackage{cite}
 
-  \setmainfont{Baskerville}
+  \setmainfont{Lato}
   \setmonofont{Consolas}
-  \newfontfamily\titlefont{Helvetica}
-  \newfontfamily\headingfont{Helvetica Bold}
+  \newfontfamily\titlefont{Lato}
+  \newfontfamily\headingfont{Lato}
 
   \titleformat*{\section}{\large\headingfont}
   \titleformat*{\subsection}{\small\headingfont}
@@ -37,7 +37,7 @@
     Παραδοτεό 1}
   \author{Χριστίνα Θεοδωρίδου - 8055\\
     Φρανκ Μπλάννινγκ - 6698\\
-    Αποστόλης Φανάκης - xxxx}
+    Αποστόλης Φανάκης - 8261}
   \date{\today}
 
   \pagestyle{fancy}
@@ -61,7 +61,7 @@
   %   \setlength{\headheight}{100pt}
   % }
 
-  \hypersetup{colorlinks=true, linkcolor=black ,urlcolor=blue}
+  \hypersetup{colorlinks=true, linkcolor=black, urlcolor=blue, citecolor=blue}
   \urlstyle{same}
 
   \begin{document}
@@ -109,16 +109,10 @@
 
   \newpage
   \input{1.intro.tex}
-  
-
-  \input{2.what.tex}
-  \input{3.why.tex}
-  \input{4.others.tex}
-  \input{5.how.tex}
-  \input{6.etc.tex}
+  \input{4.past_implementations.tex}
+  \input{5.our_implementation.tex}
 
   \bibliography{cites}{}
   \bibliographystyle{plain}
- 
 
 \end{document}
