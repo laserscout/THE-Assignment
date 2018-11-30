@@ -1,0 +1,82 @@
+This is BibTeX, Version 0.99d (TeX Live 2017/Debian)
+Capacity: max_strings=100000, hash_size=100000, hash_prime=85009
+The top-level auxiliary file: main.aux
+The style file: plain.bst
+Database file #1: cites.bib
+I was expecting a `,' or a `}'---line 22 of file cites.bib
+ : 
+ : )
+(Error may have been on previous line)
+I'm skipping whatever remains of this entry
+I was expecting a `,' or a `}'---line 25 of file cites.bib
+ : 
+ : title = "ROBUST SPEECH / MUSIC CLASSIFICATION IN AUDIO DOCUMENTS"
+(Error may have been on previous line)
+I'm skipping whatever remains of this entry
+I was expecting a `,' or a `}'---line 32 of file cites.bib
+ : 
+ : title = "METHODS FOR SPEECH / MUSIC DETECTION AND CLASSIFICATION"
+(Error may have been on previous line)
+I'm skipping whatever remains of this entry
+I was expecting a `,' or a `}'---line 39 of file cites.bib
+ : 
+ : title = "Speech/Music Discrimination using Hybrid-Based Feature Extraction for Audio Data Indexing"
+(Error may have been on previous line)
+I'm skipping whatever remains of this entry
+Warning--to sort, need author or key in robust
+Warning--to sort, need author or key in mirex
+Warning--to sort, need author or key in hybrid
+Warning--empty author in robust
+Warning--empty title in robust
+Warning--empty journal in robust
+Warning--empty year in robust
+Warning--empty author in mirex
+Warning--empty title in mirex
+Warning--empty journal in mirex
+Warning--empty year in mirex
+Warning--empty author in hybrid
+Warning--empty title in hybrid
+Warning--empty journal in hybrid
+Warning--empty year in hybrid
+You've used 5 entries,
+            2118 wiz_defined-function locations,
+            509 strings with 4398 characters,
+and the built_in function-call counts, 965 in all, are:
+= -- 76
+> -- 29
+< -- 0
++ -- 13
+- -- 8
+* -- 77
+:= -- 144
+add.period$ -- 9
+call.type$ -- 5
+change.case$ -- 16
+chr.to.int$ -- 0
+cite$ -- 20
+duplicate$ -- 50
+empty$ -- 89
+format.name$ -- 8
+if$ -- 187
+int.to.chr$ -- 0
+int.to.str$ -- 5
+missing$ -- 5
+newline$ -- 22
+num.names$ -- 4
+pop$ -- 40
+preamble$ -- 1
+purify$ -- 14
+quote$ -- 0
+skip$ -- 37
+stack$ -- 0
+substring$ -- 25
+swap$ -- 2
+text.length$ -- 0
+text.prefix$ -- 0
+top$ -- 0
+type$ -- 20
+warning$ -- 15
+while$ -- 4
+width$ -- 6
+write$ -- 34
+(There were 4 error messages)
