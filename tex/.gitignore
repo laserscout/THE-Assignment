@@ -6,4 +6,5 @@
 *.synctex.gz
 *.toc
 *~
+classifier/myenv
 auto
