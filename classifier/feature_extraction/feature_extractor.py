@@ -1,13 +1,15 @@
+# import essentia.standard
 import essentia
-import essentia.standard
-from essentia.standard import *
-import essentia.streaming
-from pylab import plot, show, figure, imshow
-import matplotlib.pyplot as plt
+from essentia.standard import (MonoLoader, Windowing, Spectrum, MFCC,
+	ZeroCrossingRate, SpectralCentroidTime, RollOff, Flux, FrameGenerator,
+	YamlOutput)
+
+# Disable annoying info level logging
+essentia.log.infoActive = False
 
 def extractFeatures(audioPath, outputPath, sampleRate):
 	# Loads the audio file specified
-	loader = essentia.standard.MonoLoader(filename = audioPath, sampleRate = sampleRate)
+	loader = MonoLoader(filename = audioPath, sampleRate = sampleRate)
 	audio = loader()
 
 	# Sets up the functions that will be used
