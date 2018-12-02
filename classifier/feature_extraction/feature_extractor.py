@@ -1,8 +1,9 @@
 # import essentia.standard
 import essentia
 from essentia.standard import (MonoLoader, Windowing, Spectrum, MFCC,
-	ZeroCrossingRate, SpectralCentroidTime, RollOff, Flux, FrameGenerator,
-	YamlOutput)
+	ZeroCrossingRate, SpectralCentroidTime, RollOff, Flux, Envelope,
+	FlatnessSFX, LogAttackTime, StrongDecay, FlatnessDB, HFC, LPC,
+	SpectralComplexity, FrameGenerator, YamlOutput)
 
 # Disable annoying info level logging
 essentia.log.infoActive = False
@@ -22,6 +23,14 @@ def extractFeatures(audioPath, outputPath, sampleRate):
 	sc = SpectralCentroidTime(sampleRate = sampleRate)
 	sr = RollOff(sampleRate = sampleRate)
 	sf = Flux()
+	env = Envelope(attackTime = 2, releaseTime = 300, sampleRate = sampleRate)
+	flat = FlatnessSFX()
+	logAtt = LogAttackTime(sampleRate = sampleRate)
+	strDec = StrongDecay(sampleRate = sampleRate)
+	flatDB = FlatnessDB()
+	hfc = HFC(sampleRate = sampleRate)
+	lpc = LPC(sampleRate = sampleRate)
+	spcComp = SpectralComplexity(sampleRate = sampleRate, magnitudeThreshold = 2)
 
 	# Creates a pool to collect the values of the features
 	pool = essentia.Pool()
@@ -35,20 +44,47 @@ def extractFeatures(audioPath, outputPath, sampleRate):
 		# Computes time domain features
 		frameZCR = zcr(windowedFrame)
 		frameSC = sc(windowedFrame)
+		frameEFlatness = flat(env(windowedFrame))
+		frameLogAtt = logAtt(env(windowedFrame))[1]
+		frameStrDec = strDec(windowedFrame)
+		frameLPC, frameReflection = lpc(windowedFrame)
 
 		# Computes spectral features
 		frameSpectrum = spectrum(windowedFrame)
 		frameSR = sr(frameSpectrum)
 		frameSF = sf(frameSpectrum)
+		frameSEFlatness = flat(env(frameSpectrum))
+		frameSLogAtt = logAtt(env(frameSpectrum))[1]
+		frameSStrDec = strDec(frameSpectrum)
+		frameSFlat = flatDB(frameSpectrum)
+		frameHFC = hfc(frameSpectrum)
+		frameSComp = spcComp(frameSpectrum)
+
 		# Discards the bands
 		mfcc_coeffs = mfcc(frameSpectrum)[1]
 
 		# Adds the values to the pool
 		pool.add('ZCR', frameZCR)
 		pool.add('SC', frameSC)
+		pool.add('Flat', frameEFlatness)
+		pool.add('LAtt', frameLogAtt)
+		pool.add('SDec', frameStrDec)
+		for index, coef in enumerate(frameLPC[1:frameLPC.size]):
+			pool.add('LPC' + str(index + 1), coef)
+		for index, coef in enumerate(frameReflection):
+			pool.add('REFL' + str(index), coef)
+
 		pool.add('SR', frameSR)
 		pool.add('SF', frameSF)
-		pool.add('mfcc', mfcc_coeffs)
+		pool.add('SEFlat', frameSEFlatness)
+		pool.add('SFlat', frameSFlat)
+		pool.add('SLAtt', frameSLogAtt)
+		pool.add('SSDec', frameSStrDec)
+		pool.add('HFC', frameHFC)
+		pool.add('SComp', frameSComp)
+
+		for index, coef in enumerate(mfcc_coeffs):
+			pool.add('mfcc' + str(index), coef)
 
 	YamlOutput(filename = outputPath, format = 'json', writeVersion = False)(pool)
 
