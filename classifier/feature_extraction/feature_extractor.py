@@ -60,6 +60,7 @@ def extractFeatures(audioPath, outputPath, sampleRate):
 		frameHFC = hfc(frameSpectrum)
 		frameSComp = spcComp(frameSpectrum)
 
+		# Computes cepstral features
 		# Discards the bands
 		mfcc_coeffs = mfcc(frameSpectrum)[1]
 

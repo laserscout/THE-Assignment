@@ -71,6 +71,7 @@ def featureSelection(dataset, target, featureKeys):
 	selector = VarianceThreshold(threshold = (varianceThreshold * (1 - varianceThreshold)))
 	varReducedDataset = selector.fit_transform(dataset)
 	isRetained = selector.get_support()
+	varReducedFeatureKeys = featureKeys[isRetained]
 
 	print(bcolors.GREEN + 'Retaining features:' + bcolors.ENDC)
 	for index, retain in enumerate(isRetained):
@@ -84,35 +85,36 @@ def featureSelection(dataset, target, featureKeys):
 	print('\n')
 
 	# Selects features based on univariate statistical tests
-	from sklearn.datasets import load_digits
-	from sklearn.feature_selection import SelectPercentile, mutual_info_classif
+	# from sklearn.datasets import load_digits
+	# from sklearn.feature_selection import SelectPercentile, mutual_info_classif
 
-	print(bcolors.YELLOW + 'Running feature selection based on mutual information' + bcolors.ENDC)
-	percentileSelector = SelectPercentile(mutual_info_classif, percentile=33)
-	perReducedDataset = percentileSelector.fit_transform(dataset, target)
-	isRetained = percentileSelector.get_support()
+	# print(bcolors.YELLOW + 'Running feature selection based on mutual information' + bcolors.ENDC)
+	# percentileSelector = SelectPercentile(mutual_info_classif, percentile=33)
+	# perReducedDataset = percentileSelector.fit_transform(dataset, target)
+	# isRetained = percentileSelector.get_support()
+	# perReducedFeatureKeys = featureKeys[isRetained]
 
-	print(bcolors.BLUE + 'Scores of features:' + bcolors.ENDC)
-	for index, score in enumerate(percentileSelector.scores_):
-		print(featureKeys[index] + ' => ' + str(score), end='\t\t', flush=True)
-		if index%2:
-			print('')
-	print('')
+	# print(bcolors.BLUE + 'Scores of features:' + bcolors.ENDC)
+	# for index, score in enumerate(percentileSelector.scores_):
+	# 	print(featureKeys[index] + ' => ' + str(score), end='\t\t', flush=True)
+	# 	if index%2:
+	# 		print('')
+	# print('')
 
-	print(bcolors.GREEN + 'Retaining features:' + bcolors.ENDC)
-	for index, retain in enumerate(isRetained):
-		if retain and index < featureKeys.size:
-			print(featureKeys[index], end='\t', flush=True)
+	# print(bcolors.GREEN + 'Retaining features:' + bcolors.ENDC)
+	# for index, retain in enumerate(isRetained):
+	# 	if retain and index < featureKeys.size:
+	# 		print(featureKeys[index], end='\t', flush=True)
 
-	print(bcolors.RED + '\n\nRemoving features:' + bcolors.ENDC)
-	for index, retain in enumerate(isRetained):
-		if not retain and index < featureKeys.size:
-			print(featureKeys[index], end='\t', flush=True)
-	print('\n')
+	# print(bcolors.RED + '\n\nRemoving features:' + bcolors.ENDC)
+	# for index, retain in enumerate(isRetained):
+	# 	if not retain and index < featureKeys.size:
+	# 		print(featureKeys[index], end='\t', flush=True)
+	# print('\n')
 
 	# TODO: change the return value after the values of the parameters are decided
 	# and the feature selection is complete
-	return dataset
+	return varReducedDataset, varReducedFeatureKeys
 
 # Details about this part can be found in the link bellow:
 # https://scikit-learn.org/stable/modules/preprocessing.html#preprocessing
@@ -129,7 +131,7 @@ def standardization(dataset):
 
 	# TODO: change the return value after the values of the parameters are decided
 	# and the feature selection is complete
-	return dataset
+	return scaledDataset
 
 # Details about this part can be found in the link bellow:
 # https://scikit-learn.org/stable/modules/generated/sklearn.decomposition.PCA.html#sklearn.decomposition.PCA
@@ -151,8 +153,10 @@ print(bcolors.BLUE + 'feature_preprocessing loaded' + bcolors.ENDC)
 if __name__ == "__main__":
 	import sys
 	dataset, target, featureKeys = createSingleFeaturesArray(sys.argv[1], sys.argv[2])
-	PCA(standardization(featureSelection(dataset, target, featureKeys)))
+	dataset, featureKeys = featureSelection(dataset, target, featureKeys)
+	newDataset = PCA(standardization(dataset))
+
 	print(bcolors.GREEN + 'Saving results to files' + bcolors.ENDC)
-	np.save('dataset.npy', dataset)
+	np.save('dataset.npy', newDataset)
 	np.save('target.npy', target)
 	np.save('featureKeys.npy', featureKeys)
