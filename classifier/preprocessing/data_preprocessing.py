@@ -3,7 +3,14 @@ from os.path import isfile, join
 import numpy as np
 import json
 
-def arrayFromJSONs(JSONPath):
+class bcolors:
+	BLUE = '\033[94m'
+	GREEN = '\033[92m'
+	YELLOW = '\033[93m'
+	RED = '\033[91m'
+	ENDC = '\033[0m'
+
+def arrayFromJSON(JSONPath):
 	with open(JSONPath) as jsonFile:
 		rawJSON = json.load(jsonFile)
 
@@ -21,6 +28,7 @@ def arrayFromJSONs(JSONPath):
 	return keys, values
 
 def createSingleFeaturesArray(musicJSONsPath, speechJSONsPath):
+	print(bcolors.YELLOW + 'Creating single features array' + bcolors.ENDC)
 	dataset = np.array([])
 	featureKeys = np.array([])
 
@@ -29,47 +37,47 @@ def createSingleFeaturesArray(musicJSONsPath, speechJSONsPath):
 	for file in featuresFiles:
 		if dataset.size == 0:
 			# Gets feature arrays
-			featureKeys, musicFeatures = arrayFromJSONs(musicJSONsPath + file)
-			# Appends the class to the arrays (0 for music, 1 for speech)
-			musicClass = np.zeros((musicFeatures.shape[0]), dtype=int)
-			musicFeatures = np.c_[musicFeatures, musicClass]
+			featureKeys, musicFeatures = arrayFromJSON(musicJSONsPath + file)
+			# Initializes dataset array
 			dataset = np.copy(musicFeatures)
 		else:
 			# Gets feature arrays
-			musicFeatures = arrayFromJSONs(musicJSONsPath + file)[1]
-			# Appends the class to the arrays (0 for music, 1 for speech)
-			musicFeatures = np.c_[musicFeatures, musicClass]
+			musicFeatures = arrayFromJSON(musicJSONsPath + file)[1]
 			dataset = np.vstack((dataset, musicFeatures))
+
+	# Initializes target array (0 for music)
+	target = np.zeros((dataset.shape[0]), dtype=int)
 
 	# Reads the extracted features for the speech class
 	featuresFiles = [file for file in listdir(speechJSONsPath) if isfile(join(speechJSONsPath, file))]
 	for file in featuresFiles:
 		# Gets feature arrays
-		speechFeatures = arrayFromJSONs(speechJSONsPath + file)[1]
-		# Appends the class to the arrays (0 for music, 1 for speech)
-		speechClass = np.ones((speechFeatures.shape[0]), dtype=int)
-		speechFeatures = np.c_[speechFeatures, speechClass]
+		speechFeatures = arrayFromJSON(speechJSONsPath + file)[1]
 		dataset = np.vstack((dataset, speechFeatures))
 
-	return dataset, featureKeys
+	# Appends the new class to the target array (1 for speech)
+	target = np.hstack((target, np.ones((dataset.shape[0] - target.size), dtype=int)))
+
+	return dataset, target, featureKeys
 
 # Details about this part can be found in the link bellow:
 # https://scikit-learn.org/stable/modules/feature_selection.html
-def featureSelection(dataset, featureKeys):
+def featureSelection(dataset, target, featureKeys):
 	# Selects features based on a variance threshold
 	from sklearn.feature_selection import VarianceThreshold
 
-	varianceThreshold = 0.72
+	print(bcolors.YELLOW + 'Running variance threshold feature selection' + bcolors.ENDC)
+	varianceThreshold = 0.1
 	selector = VarianceThreshold(threshold = (varianceThreshold * (1 - varianceThreshold)))
 	varReducedDataset = selector.fit_transform(dataset)
 	isRetained = selector.get_support()
 
-	print('Retaining features:')
+	print(bcolors.GREEN + 'Retaining features:' + bcolors.ENDC)
 	for index, retain in enumerate(isRetained):
 		if retain and index < featureKeys.size:
 			print(featureKeys[index], end='\t', flush=True)
 
-	print('\n\nRemoving features:')
+	print(bcolors.RED + '\n\nRemoving features:' + bcolors.ENDC)
 	for index, retain in enumerate(isRetained):
 		if not retain and index < featureKeys.size:
 			print(featureKeys[index], end='\t', flush=True)
@@ -77,10 +85,30 @@ def featureSelection(dataset, featureKeys):
 
 	# Selects features based on univariate statistical tests
 	from sklearn.datasets import load_digits
-	from sklearn.feature_selection import SelectPercentile, mutual_info_regression
+	from sklearn.feature_selection import SelectPercentile, mutual_info_classif
 
-	perReducedDataset = SelectPercentile(mutual_info_regression,
-		percentile=33).fit_transform(dataset[:, :-1], dataset[:, -1])
+	print(bcolors.YELLOW + 'Running feature selection based on mutual information' + bcolors.ENDC)
+	percentileSelector = SelectPercentile(mutual_info_classif, percentile=33)
+	perReducedDataset = percentileSelector.fit_transform(dataset, target)
+	isRetained = percentileSelector.get_support()
+
+	print(bcolors.BLUE + 'Scores of features:' + bcolors.ENDC)
+	for index, score in enumerate(percentileSelector.scores_):
+		print(featureKeys[index] + ' => ' + str(score), end='\t\t', flush=True)
+		if index%2:
+			print('')
+	print('')
+
+	print(bcolors.GREEN + 'Retaining features:' + bcolors.ENDC)
+	for index, retain in enumerate(isRetained):
+		if retain and index < featureKeys.size:
+			print(featureKeys[index], end='\t', flush=True)
+
+	print(bcolors.RED + '\n\nRemoving features:' + bcolors.ENDC)
+	for index, retain in enumerate(isRetained):
+		if not retain and index < featureKeys.size:
+			print(featureKeys[index], end='\t', flush=True)
+	print('\n')
 
 	# TODO: change the return value after the values of the parameters are decided
 	# and the feature selection is complete
@@ -91,13 +119,13 @@ def featureSelection(dataset, featureKeys):
 def standardization(dataset):
 	from sklearn import preprocessing
 
+	print(bcolors.YELLOW + 'Running standardization' + bcolors.ENDC)
 	# Standardization
-	scaledDataset = preprocessing.scale(dataset[:, :-1])
-	scaledDataset = np.c_[scaledDataset, dataset[:, -1]]
+	scaledDataset = preprocessing.scale(dataset)
 
+	print(bcolors.YELLOW + 'Running normalization' + bcolors.ENDC)
 	# Normalization
-	scaledDataset = preprocessing.normalize(dataset[:, :-1], norm='l2')
-	scaledDataset = np.c_[scaledDataset, dataset[:, -1]]
+	normalizedDataset = preprocessing.normalize(dataset, norm='l2')
 
 	# TODO: change the return value after the values of the parameters are decided
 	# and the feature selection is complete
@@ -108,19 +136,23 @@ def standardization(dataset):
 def PCA(dataset):
 	from sklearn.decomposition import PCA
 
-	pca = PCA(n_components=10,svd_solver='full')
-	transformedDataset = pca.fit(dataset[:, :-1]).transform(dataset[:, :-1])
-	transformedDataset = np.c_[transformedDataset, dataset[:, -1]]
+	print(bcolors.YELLOW + 'Running PCA' + bcolors.ENDC)
+	pca = PCA(n_components=10, svd_solver='full')
+	transformedDataset = pca.fit(dataset).transform(dataset)
 
 	# TODO: change the return value after the values of the parameters are decided
 	# and the feature selection is complete
 	return dataset
 
 # Prints a nice message to let the user know the module was imported
-print('feature_preprocessing loaded')
+print(bcolors.BLUE + 'feature_preprocessing loaded' + bcolors.ENDC)
 
 # Enables executing the module as a standalone script
 if __name__ == "__main__":
 	import sys
-	dataset, featureKeys = createSingleFeaturesArray(sys.argv[1], sys.argv[2])
-	PCA(standardization(featureSelection(dataset, featureKeys)))
+	dataset, target, featureKeys = createSingleFeaturesArray(sys.argv[1], sys.argv[2])
+	PCA(standardization(featureSelection(dataset, target, featureKeys)))
+	print(bcolors.GREEN + 'Saving results to files' + bcolors.ENDC)
+	np.save('dataset.npy', dataset)
+	np.save('target.npy', target)
+	np.save('featureKeys.npy', featureKeys)
