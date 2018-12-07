@@ -61,62 +61,6 @@ def createSingleFeaturesArray(musicJSONsPath, speechJSONsPath):
 	return dataset, target, featureKeys
 
 # Details about this part can be found in the link bellow:
-# https://scikit-learn.org/stable/modules/feature_selection.html
-def featureSelection(dataset, target, featureKeys):
-	# Selects features based on a variance threshold
-	from sklearn.feature_selection import VarianceThreshold
-
-	print(bcolors.YELLOW + 'Running variance threshold feature selection' + bcolors.ENDC)
-	varianceThreshold = 0.1
-	selector = VarianceThreshold(threshold = (varianceThreshold * (1 - varianceThreshold)))
-	varReducedDataset = selector.fit_transform(dataset)
-	isRetained = selector.get_support()
-	varReducedFeatureKeys = featureKeys[isRetained]
-
-	print(bcolors.GREEN + 'Retaining features:' + bcolors.ENDC)
-	for index, retain in enumerate(isRetained):
-		if retain and index < featureKeys.size:
-			print(featureKeys[index], end='\t', flush=True)
-
-	print(bcolors.RED + '\n\nRemoving features:' + bcolors.ENDC)
-	for index, retain in enumerate(isRetained):
-		if not retain and index < featureKeys.size:
-			print(featureKeys[index], end='\t', flush=True)
-	print('\n')
-
-	# Selects features based on univariate statistical tests
-	# from sklearn.datasets import load_digits
-	# from sklearn.feature_selection import SelectPercentile, mutual_info_classif
-
-	# print(bcolors.YELLOW + 'Running feature selection based on mutual information' + bcolors.ENDC)
-	# percentileSelector = SelectPercentile(mutual_info_classif, percentile=33)
-	# perReducedDataset = percentileSelector.fit_transform(dataset, target)
-	# isRetained = percentileSelector.get_support()
-	# perReducedFeatureKeys = featureKeys[isRetained]
-
-	# print(bcolors.BLUE + 'Scores of features:' + bcolors.ENDC)
-	# for index, score in enumerate(percentileSelector.scores_):
-	# 	print(featureKeys[index] + ' => ' + str(score), end='\t\t', flush=True)
-	# 	if index%2:
-	# 		print('')
-	# print('')
-
-	# print(bcolors.GREEN + 'Retaining features:' + bcolors.ENDC)
-	# for index, retain in enumerate(isRetained):
-	# 	if retain and index < featureKeys.size:
-	# 		print(featureKeys[index], end='\t', flush=True)
-
-	# print(bcolors.RED + '\n\nRemoving features:' + bcolors.ENDC)
-	# for index, retain in enumerate(isRetained):
-	# 	if not retain and index < featureKeys.size:
-	# 		print(featureKeys[index], end='\t', flush=True)
-	# print('\n')
-
-	# TODO: change the return value after the values of the parameters are decided
-	# and the feature selection is complete
-	return varReducedDataset, varReducedFeatureKeys
-
-# Details about this part can be found in the link bellow:
 # https://scikit-learn.org/stable/modules/preprocessing.html#preprocessing
 def standardization(dataset):
 	from sklearn import preprocessing
@@ -125,12 +69,6 @@ def standardization(dataset):
 	# Standardization
 	scaledDataset = preprocessing.scale(dataset)
 
-	print(bcolors.YELLOW + 'Running normalization' + bcolors.ENDC)
-	# Normalization
-	normalizedDataset = preprocessing.normalize(dataset, norm='l2')
-
-	# TODO: change the return value after the values of the parameters are decided
-	# and the feature selection is complete
 	return scaledDataset
 
 # Details about this part can be found in the link bellow:
@@ -139,12 +77,12 @@ def PCA(dataset):
 	from sklearn.decomposition import PCA
 
 	print(bcolors.YELLOW + 'Running PCA' + bcolors.ENDC)
-	pca = PCA(n_components=10, svd_solver='full')
+	pca = PCA(n_components=15, svd_solver='full', whiten = True)
 	transformedDataset = pca.fit(dataset).transform(dataset)
 
 	# TODO: change the return value after the values of the parameters are decided
 	# and the feature selection is complete
-	return dataset
+	return transformedDataset
 
 # Prints a nice message to let the user know the module was imported
 print(bcolors.BLUE + 'feature_preprocessing loaded' + bcolors.ENDC)
@@ -153,7 +91,6 @@ print(bcolors.BLUE + 'feature_preprocessing loaded' + bcolors.ENDC)
 if __name__ == "__main__":
 	import sys
 	dataset, target, featureKeys = createSingleFeaturesArray(sys.argv[1], sys.argv[2])
-	dataset, featureKeys = featureSelection(dataset, target, featureKeys)
 	newDataset = PCA(standardization(dataset))
 
 	print(bcolors.GREEN + 'Saving results to files' + bcolors.ENDC)

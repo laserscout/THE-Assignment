@@ -2,11 +2,18 @@
 import essentia
 from essentia.standard import (MonoLoader, Windowing, Spectrum, MFCC,
 	ZeroCrossingRate, SpectralCentroidTime, RollOff, Flux, Envelope,
-	FlatnessSFX, LogAttackTime, StrongDecay, FlatnessDB, HFC, LPC,
+	FlatnessSFX, LogAttackTime, StrongDecay, FlatnessDB, HFC,
 	SpectralComplexity, FrameGenerator, YamlOutput)
 
 # Disable annoying info level logging
 essentia.log.infoActive = False
+
+class bcolors:
+	BLUE = '\033[94m'
+	GREEN = '\033[92m'
+	YELLOW = '\033[93m'
+	RED = '\033[91m'
+	ENDC = '\033[0m'
 
 def extractFeatures(audioPath, outputPath, sampleRate):
 	# Loads the audio file specified
@@ -29,7 +36,6 @@ def extractFeatures(audioPath, outputPath, sampleRate):
 	strDec = StrongDecay(sampleRate = sampleRate)
 	flatDB = FlatnessDB()
 	hfc = HFC(sampleRate = sampleRate)
-	lpc = LPC(sampleRate = sampleRate)
 	spcComp = SpectralComplexity(sampleRate = sampleRate, magnitudeThreshold = 2)
 
 	# Creates a pool to collect the values of the features
@@ -47,7 +53,6 @@ def extractFeatures(audioPath, outputPath, sampleRate):
 		frameEFlatness = flat(env(windowedFrame))
 		frameLogAtt = logAtt(env(windowedFrame))[1]
 		frameStrDec = strDec(windowedFrame)
-		frameLPC, frameReflection = lpc(windowedFrame)
 
 		# Computes spectral features
 		frameSpectrum = spectrum(windowedFrame)
@@ -70,10 +75,6 @@ def extractFeatures(audioPath, outputPath, sampleRate):
 		pool.add('Flat', frameEFlatness)
 		pool.add('LAtt', frameLogAtt)
 		pool.add('SDec', frameStrDec)
-		for index, coef in enumerate(frameLPC[1:frameLPC.size]):
-			pool.add('LPC' + str(index + 1), coef)
-		for index, coef in enumerate(frameReflection):
-			pool.add('REFL' + str(index), coef)
 
 		pool.add('SR', frameSR)
 		pool.add('SF', frameSF)
@@ -90,7 +91,7 @@ def extractFeatures(audioPath, outputPath, sampleRate):
 	YamlOutput(filename = outputPath, format = 'json', writeVersion = False)(pool)
 
 # Prints a nice message to let the user know the module was imported
-print('feature_extractor loaded')
+print(bcolors.BLUE + 'feature_extractor loaded' + bcolors.ENDC)
 
 # Enables executing the module as a standalone script
 if __name__ == "__main__":
