@@ -51,6 +51,17 @@ def simpleTrain(dataset, target, model='all'):
 	elif model == 'bayes':
 		return bayesAccuracy
 
+def randomForest(dataset, target):
+	from sklearn.ensemble import RandomForestClassifier
+	from sklearn.model_selection import train_test_split
+
+	trainingSet, testSet, trainingTarget, testTarget = train_test_split(dataset,
+		target, test_size=0.4, random_state=0)
+	clf = RandomForestClassifier(n_estimators=500, criterion = 'entropy',
+		n_jobs = -1, random_state = 4)
+	clf = clf.fit(trainingSet, trainingTarget)
+	print("Random forest accuracy: {0:.2f}".format(100*clf.score(testSet, testTarget)))
+
 def kFCrossValid(dataset, target, model = 'svm'):
 	from sklearn.model_selection import cross_val_score
 	from sklearn import metrics
@@ -73,6 +84,10 @@ def kFCrossValid(dataset, target, model = 'svm'):
 		# Naive Bayes
 		from sklearn.naive_bayes import GaussianNB
 		clf = GaussianNB()
+	elif model == 'rndForest':
+		from sklearn.ensemble import ExtraTreesClassifier
+		clf = ExtraTreesClassifier(n_estimators=1500, criterion = 'entropy',
+			n_jobs = -1, random_state = 4)
 	else:
 		print('Error. model specified not supported')
 		return None
