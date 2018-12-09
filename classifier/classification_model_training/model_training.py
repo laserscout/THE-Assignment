@@ -65,6 +65,7 @@ def randomForest(dataset, target):
 def kFCrossValid(dataset, target, model = 'svm'):
 	from sklearn.model_selection import cross_val_score
 	from sklearn import metrics
+	from copy import deepcopy
 
 	clf = None
 
@@ -95,12 +96,22 @@ def kFCrossValid(dataset, target, model = 'svm'):
 	from sklearn.model_selection import KFold
 	kf = KFold(n_splits=5, shuffle=True, random_state=2)
 
+	maxAccuracy = 0
+	bestClf = None
+
 	for k, (train_index, test_index) in enumerate(kf.split(dataset)):
 		kTrainSet, kTestSet = dataset[train_index], dataset[test_index]
 		kTrainTarget, kTestTarget = target[train_index], target[test_index]
 
 		clf.fit(kTrainSet, kTrainTarget)
-		print("[fold {0}], score: {1:.2f}".format(k, 100*clf.score(kTestSet, kTestTarget)))
+		acc = clf.score(kTestSet, kTestTarget)
+		print("[fold {0}], score: {1:.2f}".format(k, 100*acc))
+
+		if acc > maxAccuracy:
+			maxAccuracy = acc
+			bestClf = deepcopy(clf)
+
+	return bestClf
 
 # Prints a nice message to let the user know the module was imported
 print(bcolors.BLUE + 'model_training loaded' + bcolors.ENDC)

@@ -3,7 +3,7 @@ import essentia
 from essentia.standard import (MonoLoader, Windowing, Spectrum, MFCC,
 	ZeroCrossingRate, SpectralCentroidTime, RollOff, Flux, Envelope,
 	FlatnessSFX, LogAttackTime, StrongDecay, FlatnessDB, HFC,
-	SpectralComplexity, FrameGenerator, YamlOutput)
+	SpectralComplexity, Energy, FrameGenerator, YamlOutput)
 
 # Disable annoying info level logging
 essentia.log.infoActive = False
@@ -15,10 +15,11 @@ class bcolors:
 	RED = '\033[91m'
 	ENDC = '\033[0m'
 
-def extractFeatures(audioPath, outputPath, sampleRate):
-	# Loads the audio file specified
-	loader = MonoLoader(filename = audioPath, sampleRate = sampleRate)
-	audio = loader()
+def extractFeatures(audio, outputPath, sampleRate):
+	if isinstance(audio, str):
+		# Loads the audio file specified
+		loader = MonoLoader(filename = audio, sampleRate = sampleRate)
+		audio = loader()
 
 	# Sets up the functions that will be used
 	# TODO check if zero phase windowing is something we might want
@@ -37,6 +38,7 @@ def extractFeatures(audioPath, outputPath, sampleRate):
 	flatDB = FlatnessDB()
 	hfc = HFC(sampleRate = sampleRate)
 	spcComp = SpectralComplexity(sampleRate = sampleRate, magnitudeThreshold = 2)
+	energy = Energy()
 
 	# Creates a pool to collect the values of the features
 	pool = essentia.Pool()
@@ -67,7 +69,9 @@ def extractFeatures(audioPath, outputPath, sampleRate):
 
 		# Computes cepstral features
 		# Discards the bands
-		mfcc_coeffs = mfcc(frameSpectrum)[1]
+		melBandEnergies, mfcc_coeffs = mfcc(frameSpectrum)
+
+		fHzMod = _4HzModulation(melBandEnergies, energy(frameSpectrum), sampleRate)
 
 		# Adds the values to the pool
 		pool.add('ZCR', frameZCR)
@@ -88,7 +92,21 @@ def extractFeatures(audioPath, outputPath, sampleRate):
 		for index, coef in enumerate(mfcc_coeffs):
 			pool.add('mfcc' + str(index), coef)
 
+		pool.add('4HzMod', fHzMod)
+
 	YamlOutput(filename = outputPath, format = 'json', writeVersion = False)(pool)
+
+def _4HzModulation(melEnergies, frameEnergy, sampleRate):
+	from scipy.signal import butter, sosfilt, sosfreqz
+	nyquist = 0.5 * sampleRate
+	lowCut = 3 / nyquist
+	highCut = 5 / nyquist
+	sos = butter(N = 2, Wn = [lowCut, highCut], analog = False, btype = 'band',
+		output = 'sos')
+	filtered = sosfilt(sos = sos, x = melEnergies)
+
+	energySum = sum(filtered)
+	return energySum / frameEnergy
 
 # Prints a nice message to let the user know the module was imported
 print(bcolors.BLUE + 'feature_extractor loaded' + bcolors.ENDC)
