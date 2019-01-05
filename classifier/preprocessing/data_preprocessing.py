@@ -1,6 +1,7 @@
 from os import listdir
 from os.path import isfile, join
 import numpy as np
+import pandas as pd
 import json
 
 class bcolors:
@@ -77,12 +78,10 @@ def PCA(dataset):
 	from sklearn.decomposition import PCA
 
 	print(bcolors.YELLOW + 'Running PCA' + bcolors.ENDC)
-	pca = PCA(n_components=15, svd_solver='full', whiten = True)
+	pca = PCA(n_components=10, svd_solver='full', whiten = True)
 	transformedDataset = pca.fit(dataset).transform(dataset)
 
-	# TODO: change the return value after the values of the parameters are decided
-	# and the feature selection is complete
-	return transformedDataset
+	return pca, transformedDataset
 
 # Prints a nice message to let the user know the module was imported
 print(bcolors.BLUE + 'feature_preprocessing loaded' + bcolors.ENDC)
@@ -91,9 +90,9 @@ print(bcolors.BLUE + 'feature_preprocessing loaded' + bcolors.ENDC)
 if __name__ == "__main__":
 	import sys
 	dataset, target, featureKeys = createSingleFeaturesArray(sys.argv[1], sys.argv[2])
-	newDataset = PCA(standardization(dataset))
+	scaledDataset = standardization(dataset)
 
-	print(bcolors.GREEN + 'Saving results to files' + bcolors.ENDC)
-	np.save('dataset.npy', newDataset)
-	np.save('target.npy', target)
-	np.save('featureKeys.npy', featureKeys)
+	print(bcolors.GREEN + 'Saving scaled results to file' + bcolors.ENDC)
+	datasetFrame = pd.DataFrame(scaledDataset, columns = featureKeys)
+	datasetFrame = datasetFrame.assign(target=target)
+	datasetFrame.to_pickle("./dataset.pkl")

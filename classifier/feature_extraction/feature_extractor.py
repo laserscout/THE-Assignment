@@ -1,4 +1,6 @@
 import essentia
+import pandas as pd
+import numpy as np
 from essentia.standard import (MonoLoader, Windowing, Spectrum, MFCC,
 	ZeroCrossingRate, SpectralCentroidTime, RollOff, Flux, Envelope,
 	FlatnessSFX, LogAttackTime, StrongDecay, FlatnessDB, HFC,
@@ -94,6 +96,8 @@ def extractFeatures(audio, outputPath, sampleRate):
 		pool.add('4HzMod', fHzMod)
 
 	YamlOutput(filename = outputPath, format = 'json', writeVersion = False)(pool)
+
+	return pd.DataFrame(np.array([pool[i] for i in pool.descriptorNames()]).T, columns = pool.descriptorNames())
 
 def _4HzModulation(melEnergies, frameEnergy, sampleRate):
 	from scipy.signal import butter, sosfilt, sosfreqz

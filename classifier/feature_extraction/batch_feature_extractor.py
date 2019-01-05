@@ -1,7 +1,8 @@
 from os import listdir
 from os.path import isfile, join
 import multiprocessing as mp
-from .feature_extractor import extractFeatures
+import pandas as pd
+from feature_extractor import extractFeatures
 
 class bcolors:
 	BLUE = '\033[94m'
@@ -13,17 +14,20 @@ class bcolors:
 def batchExtract(audioFilesPath, featureFilesPath, sampleRate):
 	audioFiles = [file for file in listdir(audioFilesPath) if isfile(join(audioFilesPath, file))]
 
-	# Without multithreading
-	# for file in audioFiles:
-	# 	extractFeatures(audioFilesPath + file,
-	# 		featureFilesPath + file[0:file.rfind('.')] + '.json', int(sampleRate))
+	dataframesList = [None]*len(audioFiles)
 
-	pool = mp.Pool(processes = 8)
-	for file in audioFiles:
-		pool.apply(extractFeatures,args=(audioFilesPath + file,
-			featureFilesPath + file[0:file.rfind('.')] + '.json',int(sampleRate)))
+	pool = mp.Pool()
+	for process, file in enumerate(audioFiles):
+		dataframesList[process] = pool.apply_async(extractFeatures,args=(audioFilesPath + file,
+			featureFilesPath + file[0:file.rfind('.')] + '.json',int(sampleRate))).get()
+	pool.close()
+	pool.join()
+
+	joinedDataset = pd.concat(dataframesList)
 
 	print('Batch feature extraction finished successfully.')
+
+	return joinedDataset
 
 # Prints a nice message to let the user know the module was imported
 print(bcolors.BLUE + 'batch_feature_extractor loaded' + bcolors.ENDC)
