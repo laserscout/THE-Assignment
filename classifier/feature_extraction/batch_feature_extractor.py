@@ -2,7 +2,7 @@ from os import listdir
 from os.path import isfile, join
 import multiprocessing as mp
 import pandas as pd
-from feature_extractor import extractFeatures
+from .feature_extractor import extractFeatures
 
 class bcolors:
 	BLUE = '\033[94m'
