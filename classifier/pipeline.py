@@ -14,7 +14,7 @@ dataset = pd.concat([musicFeatures, speechFeatures])
 target = dataset.pop('target').values
 
 dataset = standardization(dataset)
-# dataset = PCA(dataset)
+# _, dataset = PCA(dataset)
 
 print('Simple train accuracy achieved = ' + str(simpleTrain(dataset, target)))
 kFCrossValid(dataset, target, model = 'svm')

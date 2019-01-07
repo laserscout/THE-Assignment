@@ -1,14 +1,12 @@
 import numpy as np
 import pandas as pd
-from sys import path
-path.append('..')
 from feature_extraction.batch_feature_extractor import batchExtract
 from preprocessing.data_preprocessing import standardization
 from training.model_training import simpleTrain
 
-musicFeatures = batchExtract('../../dataset/music_wav/', '../feature_extraction/music_features/', 22050)
+musicFeatures = batchExtract('../dataset/music_wav/', '../feature_extraction/music_features/', 22050)
 musicFeatures = musicFeatures.assign(target=0)
-speechFeatures = batchExtract('../../dataset/speech_wav/', '../feature_extraction/speech_features/', 22050)
+speechFeatures = batchExtract('../dataset/speech_wav/', '../feature_extraction/speech_features/', 22050)
 speechFeatures = speechFeatures.assign(target=1)
 
 dataset = pd.concat([musicFeatures, speechFeatures])
