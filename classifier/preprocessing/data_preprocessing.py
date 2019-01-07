@@ -68,7 +68,7 @@ def standardization(dataset):
 
 	print(bcolors.YELLOW + 'Running standardization' + bcolors.ENDC)
 	# Standardization
-	scaledDataset = preprocessing.scale(dataset)
+	scaledDataset = preprocessing.scale(np.float64(dataset))
 
 	return scaledDataset
 
