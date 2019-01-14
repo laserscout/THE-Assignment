@@ -13,7 +13,7 @@ endif
 all: main.pdf
 
 FLAGS = -pdf -pdflatex="xelatex" -use-make \
-	-quiet -synctex=1
+	-quiet -synctex=1 -bibtex
 
 main.pdf: main.tex
 	latexmk $(FLAGS) main.tex $(PDFVIEW)
