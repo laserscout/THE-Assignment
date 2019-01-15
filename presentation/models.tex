@@ -46,13 +46,13 @@ O Random Forest είναι ένας αλγόριθμος τύπου Bootstrap, �
 \begin{table}[H]
 \begin{tabular}{|l|l|l|}
 \hline
-\textbf{Μέθοδος}               & \textbf{Τρόπος αξιολόγησης}                   & \textbf{Ακρίβεια}         \\ \hline
-\multirow{4}{*}{SVM}           & Κλιμακοποίηση + τυχαίο split                  & 0.94                      \\ \cline{2-3} 
-                               & Κλιμακοποίηση + k-fold cross validation       & \textbf{0.96} (best fold) \\ \cline{2-3} 
-                               & Κλιμακοποίηση + PCA + τυχαίο split            & 0.92                      \\ \cline{2-3} 
-                               & Κλιμακοποίηση + PCA + k-fold cross validation & 0.93(best fold)           \\ \hline
-\multirow{2}{*}{Random Forest} & Κλιμακοποίηση + k-fold cross validation       & 0.95(best fold)   		   \\ \cline{2-3} 
-                               & Κλιμακοποίηση + PCA + k-fold cross validation & 0.94(best fold)           \\ \hline
+\textbf{Μέθοδος}               & \textbf{Τρόπος αξιολόγησης}                   & \textbf{Ακρίβεια}          \\ \hline
+\multirow{4}{*}{SVM}           & Κλιμακοποίηση + τυχαίο split                  & 0.94                       \\ \cline{2-3} 
+                               & Κλιμακοποίηση + k-fold cross validation       & \textbf{0.96} (best fold)  \\ \cline{2-3} 
+                               & Κλιμακοποίηση + PCA + τυχαίο split            & 0.92                       \\ \cline{2-3} 
+                               & Κλιμακοποίηση + PCA + k-fold cross validation & 0.93 (best fold)           \\ \hline
+\multirow{2}{*}{Random Forest} & Κλιμακοποίηση + k-fold cross validation       & 0.95 (best fold)   	    \\ \cline{2-3} 
+                               & Κλιμακοποίηση + PCA + k-fold cross validation & 0.94 (best fold)           \\ \hline
 \end{tabular}
 \caption{Τρόποι αξιολόγησης για διάφορα μοντέλα}
 \label{table:tab1}
@@ -78,7 +78,7 @@ SVM (PCA(10))               & 90.02 \\\hline
 \caption{Ακρίβεια ταξινομητών}
 \end{table}
 
-Όπως φαίνεται, η καλύτερες μέθοδοι είναι τα Support Vector Machines και ο αλγόριθμος Random Forest με 96\% και 95\% ακρίβεια αντίστοιχα, ενώ  κοντά βρίσκεται και ο αλγόριθμος του Multilayer perceptron. Παράλληλα, βλέπουμε ότι ο χειρότερος είναι ο Naive Bayes με περίπουτ 70\% ακρίβεια.Τέλος, η εφαρμογή του PCA είναι φανερό ότι μείωσε αρκετά την ακρίβεια του μοντέλου και για αυτόν τον λόγο συνίσταται μόνο στην περίπτωση που υπάρχει κάποιος χρονικός περιορισμός καθώς σε αυτήν την περίπτωση, λόγω της μείωσης των χαρακτηριστικών από 27 σε 10, το μοντέλο θα εκτελείται πιο γρήγορα.  
+Όπως φαίνεται, η καλύτερες μέθοδοι είναι τα Support Vector Machines και ο αλγόριθμος Random Forest με 96\% και 95\% ακρίβεια αντίστοιχα, ενώ  κοντά βρίσκεται και ο αλγόριθμος του Multilayer perceptron. Παράλληλα, βλέπουμε ότι ο χειρότερος είναι ο Naive Bayes με περίπου 70\% ακρίβεια.Τέλος, η εφαρμογή του PCA είναι φανερό ότι μείωσε αρκετά την ακρίβεια του μοντέλου και για αυτόν τον λόγο συνίσταται μόνο στην περίπτωση που υπάρχει κάποιος χρονικός περιορισμός καθώς, λόγω της μείωσης των χαρακτηριστικών από 27 σε 10, η υλοποίηση θα εκτελείται πιο γρήγορα.  
 
 
 %αναλυση γενικα για τον κωδικα (διαφανειες wrapper και execution} για τις συναρτησεις 4hz modulation, random forest, kFCrossValid 
