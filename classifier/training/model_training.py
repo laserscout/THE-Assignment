@@ -1,4 +1,5 @@
 import numpy as np
+import pandas as pd
 
 class bcolors:
 	BLUE = '\033[94m'
@@ -119,9 +120,7 @@ print(bcolors.BLUE + 'model_training loaded' + bcolors.ENDC)
 # Enables executing the module as a standalone script
 if __name__ == "__main__":
 	import sys
-	dataset = np.load(sys.argv[1] + 'dataset.npy')
-	target = np.load(sys.argv[1] + 'target.npy')
-	featureKeys = np.load(sys.argv[1] + 'featureKeys.npy')
+	dataset = pd.read_pickle(sys.argv[1])
+	target = dataset.pop('target')
 
-	# simpleTrain(dataset, target)
-	kFCrossValid(dataset, target, 'svm')
+	kFCrossValid(dataset.values, target, sys.argv[2])
