@@ -12,17 +12,26 @@ git clone https://github.com/laserscout/THE-Assignment.git
 
 The way we recommend you run the scripts in this repository, in order to avoid python v.2/3 incompatibilities and/or other uncomfortable code breakage is setting up and using a virtual environment using python's module `venv` (or any other preferred) as described bellow:
 
+First make sure that you have `python3`, `venv` for your version of python3, and `pip` for python3 on your machine. _We have tested that it works on Ubuntu 18.04 and python3.6_.
+
+Then you can install the dependencies just in the virtual environment by:
+
 ```bash
 cd THE-Assignment/classifier/
 python3 -m venv myenv
 source myenv/bin/activate
-pip install -U scikit-learn
-pip install --upgrade pandas
 pip install numpy
-pip install seaborn
 pip install scipy
+pip install scikit-learn
+pip install pandas
+pip install seaborn
 pip install essentia
 ```
+
+## Obtaining a data set
+
+In case you wish to use the GTZAN data set that we also used, you can run the downloadDataSet.sh script. Or, you can use your own.
+
 
 ## Feature extraction
 
@@ -35,7 +44,7 @@ python feature_extractor.py <audio_file_path> <extracted_features_file_path> <au
 
 A python script is also provided for a batch feature extraction. The script can be executed using the following command:
 ```bash
-python batch_feature_extractor.py <audio_files_directory> <feature_files_directory> <audio_files_sample_rate>
+python batch_feature_extractor.py <audio_files_directory/> <feature_files_directory/> <audio_files_sample_rate>
 ```
 
 ## Data preprocessing
